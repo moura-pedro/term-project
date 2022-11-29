@@ -56,11 +56,13 @@ public class SmartWord
 
     // process old messages from oldMessageFile
     public void processOldMessages(String oldMessageFile) {
-      if (trie.find(oldMessageFile)) {
-        trie.addWeight(oldMessageFile);
-      } else {
+      // if the word isnt found in the tree, put it in the tree
+      if (!trie.find(oldMessageFile)) {
         trie.root.insert(oldMessageFile);
-      }
+      } 
+
+      // addweight to to the word given
+      trie.addWeight(oldMessageFile);
     }
 
     // based on a letter typed in by the user, return 3 word guesses in an array
