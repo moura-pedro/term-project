@@ -11,15 +11,44 @@
 
 
 */
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class SmartWord
 {
     String[] guesses = new String[3];  // 3 guesses from SmartWord
 
     // initialize SmartWord with a file of English words
-    public SmartWord(String wordFile)
-    {
+    public SmartWord(String[] args) throws Exception{ // changed this from "String wordFile" to take in file as arg
+      
+    // imports input thorugh files
+      File input = new File(args[0]); 
+      Scanner sc = new Scanner(input);
+
+      Trie trie = new Trie();
+
+      while(sc.hasNext()){
+        String checkspace = sc.nextLine();
+        String [] checkmark = checkspace.split(" ");
+        String word = checkmark[0];
+        word.toLowerCase();
+
+        if(isNumeric(word) == false){
+          word.replaceAll(".", "");
+          word.replaceAll(";", "");
+          word.replaceAll(",", "");
+          word.replaceAll("!", "");
+          word.replaceAll("?", "");
+          word.replaceAll(":", "");
+          word.replaceAll("#", "");
+          word.replaceAll("%", "");
+
+          trie.insert(word);
+
+        }
+      }
 
     }
 
@@ -56,5 +85,16 @@ public class SmartWord
     {
 
     }
+
+    // method used to check if input word is equal to a #
+    public static boolean isNumeric(String str) { 
+      try {  
+        Double.parseDouble(str);  
+        return true;
+      } catch(NumberFormatException e){  
+        return false;  
+      }  
+    }
+    
 
 }
