@@ -9,6 +9,7 @@ public class Trie {
       Map<Character, TrieNode> children;
       char c;
       boolean isWord;
+      
 
       public TrieNode(char c) {
          this.c = c;
@@ -92,5 +93,17 @@ public class Trie {
       }
       suggestHelper(lastNode, list, curr);
       return list;
+   }
+
+   // iterates through the letters of the given word and adds 1 to the weight of the last letter in the word
+   public void addWeight(String word) {
+      TrieNode currentNode = root;
+      for (char c : word.toCharArray()) {
+         currentNode = currentNode.children.get(c);
+         // if statement that checks if weight is not 0, if it not 0 then we know it is the end of a word, thus we can add 1 to that weight
+         if (!currentNode.weight.equals(0)) {
+            currentNode.weight += 1;
+         }
+      }
    }
 }

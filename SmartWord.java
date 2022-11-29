@@ -20,6 +20,8 @@ public class SmartWord
 {
     String[] guesses = new String[3];  // 3 guesses from SmartWord
 
+    Trie trie;
+
     // initialize SmartWord with a file of English words
     public SmartWord(String[] args) throws Exception{ // changed this from "String wordFile" to take in file as arg
       
@@ -27,7 +29,7 @@ public class SmartWord
       File input = new File(args[0]); 
       Scanner sc = new Scanner(input);
 
-      Trie trie = new Trie();
+      trie = new Trie();
 
       while(sc.hasNext()){
         String checkspace = sc.nextLine();
@@ -45,7 +47,7 @@ public class SmartWord
           word.replaceAll("#", "");
           word.replaceAll("%", "");
 
-          trie.insert(word);
+          trie.root.insert(word);
 
         }
       }
@@ -53,9 +55,12 @@ public class SmartWord
     }
 
     // process old messages from oldMessageFile
-    public void processOldMessages(String oldMessageFile)
-    {
-     
+    public void processOldMessages(String oldMessageFile) {
+      if (trie.find(oldMessageFile)) {
+        trie.addWeight(oldMessageFile);
+      } else {
+        trie.root.insert(oldMessageFile);
+      }
     }
 
     // based on a letter typed in by the user, return 3 word guesses in an array
