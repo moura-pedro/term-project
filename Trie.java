@@ -1,63 +1,96 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+ 
 public class Trie {
+ 
+   public class TrieNode {
+      Map<Character, TrieNode> children;
+      char c;
+      boolean isWord;
 
-// trie node
-   public class Node {
-      Node[] children = new Node[26];
+      public TrieNode(char c) {
+         this.c = c;
+         children = new HashMap<>();
+      }
 
-      // isLastLetter is true if the node represents
-      // end of a word
-      boolean isLastLetter;
-      int weight;
+      public TrieNode() {
+         children = new HashMap<>();
+      }
 
-      public Node(){
-         this.isLastLetter = false;
-         weight = 0;
-         for (int i = 0; i < 26; i++) {
-            children[i] = null;
+      public void insert(String word) {
+         if (word == null || word.isEmpty()) {
+            return;
          }
+         char firstChar = word.charAt(0);
+         TrieNode child = children.get(firstChar);
+         if (child == null) {
+            child = new TrieNode(firstChar);
+            children.put(firstChar, child);
+         }
+
+         if (word.length() > 1) {
+            child.insert(word.substring(1));
+         }
+         else {
+            child.isWord = true;
+         }
+      }
+
+   }
+
+   TrieNode root;
+
+   public Trie() {
+      root = new TrieNode();
+   }
+
+   public Trie(List<String> words) {
+      root = new TrieNode();
+      for (String word : words) {
+         root.insert(word);
       }
    }
 
-   Node root;
-
-   // If not present, inserts word into trie
-   // If the word is prefix of trie node,
-   // just marks leaf node
-   public void insert(String word) {
-      int height;
-      int length = word.length();
-      int index;
-
-      Node currNode = root;
-
-      for (height = 0; height < length; height++) {
-         index = word.charAt(height) - 'a';
-         if (currNode.children[index] == null) {
-            currNode.children[index] = new Node();
-         }
-         currNode = currNode.children[index];
+   public boolean find(String prefix, boolean exact) {
+      TrieNode lastNode = root;
+      for (char c : prefix.toCharArray()) {
+         lastNode = lastNode.children.get(c);
+         if (lastNode == null) { return false; }
       }
-
-         // mark last node as leaf
-      currNode.isLastLetter = true;
+      return (!exact || lastNode.isWord);
    }
 
-   // Returns true if word presents in trie, else false
-   public boolean search(String word) {
-      int height;
-      int length = word.length();
-      int index;
-      Node currNode = root;
+   public boolean find(String prefix) {
+      return find(prefix, false);
+   }
 
-      for (height = 0; height < length; height++) {
-         index = word.charAt(height) - 'a';
-
-         if (currNode.children[index] == null) {
-            return false;
-         }
-         currNode = currNode.children[index];
+   public void suggestHelper(TrieNode root, List<String> list, StringBuffer curr) {
+      if (root.isWord) {
+         list.add(curr.toString());
       }
 
-      return (currNode.isLastLetter);
+      if (root.children == null || root.children.isEmpty())
+         return;
+
+      for (TrieNode child : root.children.values()) {
+         suggestHelper(child, list, curr.append(child.c));
+         curr.setLength(curr.length() - 1);
+      }
+   }
+
+   public List<String> suggest(String prefix) {
+      List<String> list = new ArrayList<>();
+      TrieNode lastNode = root;
+      StringBuffer curr = new StringBuffer();
+      for (char c : prefix.toCharArray()) {
+         lastNode = lastNode.children.get(c);
+         if (lastNode == null)
+               return list;
+         curr.append(c);
+      }
+      suggestHelper(lastNode, list, curr);
+      return list;
    }
 }
