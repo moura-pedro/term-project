@@ -3,40 +3,41 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
  
-public class Trie {
+public class old {
  
    public class TrieNode {
       Map<Character, TrieNode> children;
-      char value;
-      int weight;
+      char c;
+      boolean isWord;
 
       public TrieNode(char c) {
-         this.value = c;
+         this.c = c;
          children = new HashMap<>();
-         this.weight = 0;
       }
 
       public TrieNode() {
          children = new HashMap<>();
-         this.weight = 0;
       }
 
       public void insert(String word) {
-         if (word == null || word.isEmpty())
+         if (word == null || word.isEmpty()) {
             return;
-         char first = word.charAt(0);
-         TrieNode child = children.get(first);
+         }
+         char firstChar = word.charAt(0);
+         TrieNode child = children.get(firstChar);
          if (child == null) {
-            child = new TrieNode(first);
-            children.put(first, child);
+            child = new TrieNode(firstChar);
+            children.put(firstChar, child);
          }
 
          if (word.length() > 1) {
             child.insert(word.substring(1));
-         } else {
-            child.weight += 1;
+         }
+         else {
+            child.isWord = true;
          }
       }
+
    }
 
    TrieNode root;
@@ -58,38 +59,29 @@ public class Trie {
          lastNode = lastNode.children.get(c);
          if (lastNode == null) { return false; }
       }
-      return (!exact || lastNode.weight > 0);
+      return (!exact || lastNode.isWord);
    }
 
    public boolean find(String prefix) {
       return find(prefix, false);
    }
 
-   public void suggestHelper(TrieNode root, List<TrieNode> top3, StringBuffer curr, int stepper, List<String> list) {
-      if (root.weight > 0 && stepper < 3) {
-         top3.set(stepper, root);
-         list.set(stepper, curr.toString());
-      } else if (root.weight > 0) {
-         for (int i = 0; i < 3; i++) {
-            if (root.weight > top3.get(i).weight) {
-               top3.set(stepper, root);
-               list.set(stepper, curr.toString());
-               break;
-            }
-         }
+   public void suggestHelper(TrieNode root, List<String> list, StringBuffer curr) {
+      if (root.isWord) {
+         list.add(curr.toString());
       }
 
       if (root.children == null || root.children.isEmpty())
          return;
 
       for (TrieNode child : root.children.values()) {
-         suggestHelper(child, top3, curr.append(child.value), stepper + 1, list);
+         suggestHelper(child, list, curr.append(child.c));
          curr.setLength(curr.length() - 1);
       }
    }
 
    public List<String> suggest(String prefix) {
-      List<String> list = new ArrayList();
+      List<String> list = new ArrayList<>();
       TrieNode lastNode = root;
       StringBuffer curr = new StringBuffer();
       for (char c : prefix.toCharArray()) {
@@ -98,10 +90,7 @@ public class Trie {
                return list;
          curr.append(c);
       }
-
-      List<TrieNode> top = new ArrayList<>();
-      suggestHelper(lastNode, top, curr, 0, list);
-
+      suggestHelper(lastNode, list, curr);
       return list;
    }
 }
