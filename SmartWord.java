@@ -45,7 +45,7 @@ public class SmartWord
           word.replaceAll("#", "");
           word.replaceAll("%", "");
 
-          trie.insert(word);
+          trie.root.insert(word);
 
         }
       }
