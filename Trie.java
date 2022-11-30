@@ -65,15 +65,15 @@ public class Trie {
       return find(prefix, false);
    }
 
-   public void suggestHelper(TrieNode root, List<TrieNode> top3, StringBuffer curr, int stepper, List<String> list) {
-      if (root.weight > 0 && stepper < 3) {
-         top3.set(stepper, root);
-         list.set(stepper, curr.toString());
+   public void suggestHelper(TrieNode root, List<String> list, StringBuffer curr, List<TrieNode> top3) {
+      if (root.weight > 0 && top3.size() < 3) {
+         list.add(curr.toString());
+         top3.add(root);
       } else if (root.weight > 0) {
          for (int i = 0; i < 3; i++) {
             if (root.weight > top3.get(i).weight) {
-               top3.set(stepper, root);
-               list.set(stepper, curr.toString());
+               list.set(i, curr.toString());
+               top3.set(i, root);
                break;
             }
          }
@@ -83,13 +83,13 @@ public class Trie {
          return;
 
       for (TrieNode child : root.children.values()) {
-         suggestHelper(child, top3, curr.append(child.value), stepper + 1, list);
+         suggestHelper(child, list, curr.append(child.value), top3);
          curr.setLength(curr.length() - 1);
       }
    }
 
    public List<String> suggest(String prefix) {
-      List<String> list = new ArrayList();
+      List<String> list = new ArrayList<>();
       TrieNode lastNode = root;
       StringBuffer curr = new StringBuffer();
       for (char c : prefix.toCharArray()) {
@@ -98,10 +98,8 @@ public class Trie {
                return list;
          curr.append(c);
       }
-
-      List<TrieNode> top = new ArrayList<>();
-      suggestHelper(lastNode, top, curr, 0, list);
-
+      List<TrieNode> top3 = new ArrayList<>();
+      suggestHelper(lastNode, list, curr, top3);
       return list;
    }
 }
