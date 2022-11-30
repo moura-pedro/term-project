@@ -23,46 +23,52 @@ public class SmartWord
     Trie trie;
 
     // initialize SmartWord with a file of English words
-    public SmartWord(String[] args) throws Exception{ // changed this from "String wordFile" to take in file as arg
+    public SmartWord(String args){ // changed this from "String wordFile" to take in file as arg
       
     // imports input thorugh files
-      File input = new File(args[0]); 
-      Scanner sc = new Scanner(input);
-
-      trie = new Trie();
+      //File input = new File(args); 
+      Scanner sc = new Scanner(args);
 
       while(sc.hasNext()){
         String checkspace = sc.nextLine();
         String [] checkmark = checkspace.split(" ");
         String word = checkmark[0];
         word.toLowerCase();
-
+        trie = new Trie();
+ 
         if(isNumeric(word) == false){
-          word.replaceAll(".", "");
-          word.replaceAll(";", "");
-          word.replaceAll(",", "");
-          word.replaceAll("!", "");
-          word.replaceAll("?", "");
-          word.replaceAll(":", "");
-          word.replaceAll("#", "");
-          word.replaceAll("%", "");
-
+          word.replaceAll("\\p{Punct}", "");
           trie.root.insert(word);
-
         }
       }
-
     }
 
-    // process old messages from oldMessageFile
-    public void processOldMessages(String oldMessageFile) {
-      // if the word isnt found in the tree, put it in the tree
-      if (!trie.find(oldMessageFile)) {
-        trie.root.insert(oldMessageFile);
-      } 
+   // process old messages from oldMessageFile
+   public void processOldMessages(String args) // was String oldMessageFile
+   {
+     // imports input thorugh files
+     //File input = new File(args[0]); 
+     Scanner sc = new Scanner(args);
 
-      // addweight to to the word given
-      trie.addWeight(oldMessageFile);
+     while(sc.hasNext()){
+       String checkspace = sc.nextLine();
+       String [] checkmark = checkspace.split(" ");
+       String word = checkmark[0];
+       word.toLowerCase();
+
+       if(isNumeric(word) == false){
+        System.out.println("Entered isNumeric");
+        word.replaceAll("\\p{Punct}", "");
+
+         // if the word isnt found in the tree, put it in the tree
+         if (!trie.find(word)) {
+           trie.root.insert(word);
+         } 
+
+         // addweight to to the word given
+         trie.addWeight(word);
+        }
+      }
     }
 
     // based on a letter typed in by the user, return 3 word guesses in an array
