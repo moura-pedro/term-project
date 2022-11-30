@@ -50,23 +50,23 @@ public class SmartWord
      //File input = new File(args[0]); 
      Scanner sc = new Scanner(args);
 
-     while(sc.hasNext()){
-       String checkspace = sc.nextLine();
-       String [] checkmark = checkspace.split(" ");
-       String word = checkmark[0];
-       word.toLowerCase();
+     while(sc.hasNextLine()) {
+        String checkspace = sc.nextLine();
+        String [] checkmark = checkspace.split(" ");
+        for (String word : checkmark) {
+          word.toLowerCase();
 
-       if(isNumeric(word) == false){
-        System.out.println("Entered isNumeric");
-        word.replaceAll("\\p{Punct}", "");
+          if(isNumeric(word) == false) {
+            word.replaceAll("\\p{Punct}", "");
 
-         // if the word isnt found in the tree, put it in the tree
-         if (!trie.find(word)) {
-           trie.root.insert(word);
-         } 
+            // if the word isnt found in the tree, put it in the tree
+            if (!trie.find(word)) {
+              trie.root.insert(word);
+            } 
 
-         // addweight to to the word given
-         trie.addWeight(word);
+            // addweight to to the word given
+            trie.addWeight(word);
+          }
         }
       }
     }

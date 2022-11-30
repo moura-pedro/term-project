@@ -117,7 +117,7 @@ public class Trie {
       // if statement that checks if weight is not 0, if it not 0 then we know it is the end of a word, thus we can add 1 to that weight
       if (currentNode.weight != 0) {
          currentNode.weight += 1;
-         System.out.println("Current Node: " + currentNode.value + "Current Node weight" + currentNode.weight );
+         System.out.println("Current Node: " + currentNode.value + " Current Node weight: " + currentNode.weight );
       }
    }
 }
