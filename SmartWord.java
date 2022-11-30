@@ -54,12 +54,14 @@ public class SmartWord {
         String[] words = messages.nextLine().split(" ");
 
         for (String word : words) {
-          if (word.length() > 2) {
+          if (word.length() > 1) {
             if (symbols.indexOf(word.charAt(0)) != -1) {
               word = word.substring(1);
             }
-            if (symbols.indexOf(word.charAt(word.length() - 1)) != -1) {
+            if (symbols.indexOf(word.charAt(word.length() - 1)) != -1 && word.length() > 2) {
               word = word.substring(0, word.length() - 2);
+            } else if (symbols.indexOf(word.charAt(word.length() - 1)) != -1) {
+              word = word.substring(0, 0);
             }
   
             if (temp.find(word)) {
