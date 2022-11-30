@@ -37,6 +37,23 @@ public class Trie {
             child.weight += 1;
          }
       }
+
+      public void addWord(String word) {
+         if (word == null || word.isEmpty())
+            return;
+         char first = word.charAt(0);
+         TrieNode child = children.get(first);
+         if (child == null) {
+            child = new TrieNode(first);
+            children.put(first, child);
+         }
+
+         if (word.length() > 1) {
+            child.insert(word.substring(1));
+         } else {
+            child.weight += 2;
+         }
+      }
    }
 
    TrieNode root;
