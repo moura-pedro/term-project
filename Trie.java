@@ -9,7 +9,6 @@ public class Trie {
       Map<Character, TrieNode> children;
       char value;
       int weight;
-      
 
       public TrieNode(char c) {
          this.value = c;
@@ -39,6 +38,22 @@ public class Trie {
          }
       }
 
+      public void addWord(String word) {
+         if (word == null || word.isEmpty())
+            return;
+         char first = word.charAt(0);
+         TrieNode child = children.get(first);
+         if (child == null) {
+            child = new TrieNode(first);
+            children.put(first, child);
+         }
+
+         if (word.length() > 1) {
+            child.insert(word.substring(1));
+         } else {
+            child.weight += 2;
+         }
+      }
    }
 
    TrieNode root;
@@ -72,12 +87,21 @@ public class Trie {
          list.add(curr.toString());
          top3.add(root);
       } else if (root.weight > 0) {
+         int[] dif = new int[3];
          for (int i = 0; i < 3; i++) {
-            if (root.weight > top3.get(i).weight) {
-               list.set(i, curr.toString());
-               top3.set(i, root);
-               break;
+            dif[i] = root.weight - top3.get(i).weight;
+         }
+         int index = -1;
+         for (int i = 0; i < 3; i++) {
+            if (dif[i] > 0 && index == -1) {
+               index = i;
+            } else if (dif[i] > 0 && dif[index] < dif[i]) {
+               index = i;
             }
+         }
+         if (index != -1) {
+            list.set(index, curr.toString());
+            top3.set(index, root);
          }
       }
 
@@ -103,21 +127,5 @@ public class Trie {
       List<TrieNode> top3 = new ArrayList<>();
       suggestHelper(lastNode, list, curr, top3);
       return list;
-   }
-
-   // iterates through the letters of the given word and adds 1 to the weight of the last letter in the word
-   public void addWeight(String word) {
-      System.out.println("Entered addWeight...");
-      TrieNode currentNode = root;
-      // for each loop to itereate through the tree to get to assign current node the last letter of the word
-      for (char c : word.toCharArray()) {
-         currentNode = currentNode.children.get(c);
-      }
-
-      // if statement that checks if weight is not 0, if it not 0 then we know it is the end of a word, thus we can add 1 to that weight
-      if (currentNode.weight != 0) {
-         currentNode.weight += 1;
-         System.out.println("Current Node: " + currentNode.value + " Current Node weight " + currentNode.weight );
-      }
    }
 }
