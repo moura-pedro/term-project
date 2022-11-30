@@ -70,12 +70,21 @@ public class Trie {
          list.add(curr.toString());
          top3.add(root);
       } else if (root.weight > 0) {
+         int[] dif = new int[3];
          for (int i = 0; i < 3; i++) {
-            if (root.weight > top3.get(i).weight) {
-               list.set(i, curr.toString());
-               top3.set(i, root);
-               break;
+            dif[i] = root.weight - top3.get(i).weight;
+         }
+         int index = -1;
+         for (int i = 0; i < 3; i++) {
+            if (dif[i] > 0 && index == -1) {
+               index = i;
+            } else if (dif[i] > 0 && dif[index] < dif[i]) {
+               index = i;
             }
+         }
+         if (index != -1) {
+            list.set(index, curr.toString());
+            top3.set(index, root);
          }
       }
 
