@@ -16,19 +16,15 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SmartWord {
     String[] guesses = new String[3];  // 3 guesses from SmartWord
     Trie temp = new Trie();
     StringBuilder currWord = new StringBuilder("");
-    List<String> goodWords = new ArrayList<>();
-    List<String> badWords = new ArrayList<>();
 
     // initialize SmartWord with a file of English words
     public SmartWord(String wordFile) throws FileNotFoundException {
-      /*
       File file = new File(wordFile);
       Scanner words = new Scanner(file);
 
@@ -36,7 +32,6 @@ public class SmartWord {
         temp.root.insert(words.nextLine());
       }
       words.close();
-      */
     }
 
     // process old messages from oldMessageFile
@@ -112,10 +107,7 @@ public class SmartWord {
     public void feedback(boolean isCorrectGuess, String correctWord) {
       if (correctWord == null) {
         return;
-      } else if (isCorrectGuess) {
-        goodWords.add(correctWord);
-      } else {
-        badWords.add(correctWord);
       }
+      temp.root.insert(correctWord);
     }
 }
