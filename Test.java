@@ -14,7 +14,7 @@ public class Test {
       System.out.println(testTrie.find("Case"));
       System.out.println(testTrie.find("jonb"));
 
-      System.out.println(testTrie.suggest("pe"));
+      System.out.println(testTrie.guess("pe"));
       
 
 
