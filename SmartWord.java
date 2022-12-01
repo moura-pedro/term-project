@@ -1,5 +1,5 @@
 /*
-  Authors (group members):
+  Authors (group members): 
   Email addresses of group members:
   Group name:
   Course:
@@ -77,7 +77,7 @@ public class SmartWord {
         currWord.append(letter);
       }
 
-      List<String> top = temp.suggest(currWord.toString());
+      List<String> top = temp.guess(currWord.toString());
       if (top.size() == 3) {
         for (int i = 0; i < 3; i++) {
           guesses[i] = top.get(i);
