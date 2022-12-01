@@ -1,71 +1,89 @@
 /*
-
   Authors (group members):
   Email addresses of group members:
   Group name:
-
   Course:
   Section:
-
   Description of the overall algorithm:
-
-
 */
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 
-public class SmartWord
-{
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+
+public class SmartWord {
     String[] guesses = new String[3];  // 3 guesses from SmartWord
+    Trie temp = new Trie();
+    StringBuilder currWord = new StringBuilder("");
 
     // initialize SmartWord with a file of English words
-    public SmartWord(String[] args) throws Exception{ // changed this from "String wordFile" to take in file as arg
-      
-    // imports input thorugh files
-      File input = new File(args[0]); 
-      Scanner sc = new Scanner(input);
+    public SmartWord(String wordFile) throws FileNotFoundException {
+      File file = new File(wordFile);
+      Scanner words = new Scanner(file);
 
-      Trie trie = new Trie();
-
-      while(sc.hasNext()){
-        String checkspace = sc.nextLine();
-        String [] checkmark = checkspace.split(" ");
-        String word = checkmark[0];
-        word.toLowerCase();
-
-        if(isNumeric(word) == false){
-          word.replaceAll(".", "");
-          word.replaceAll(";", "");
-          word.replaceAll(",", "");
-          word.replaceAll("!", "");
-          word.replaceAll("?", "");
-          word.replaceAll(":", "");
-          word.replaceAll("#", "");
-          word.replaceAll("%", "");
-
-          trie.insert(word);
-
-        }
+      while (words.hasNextLine()) {
+        temp.root.insert(words.nextLine());
       }
-
+      words.close();
     }
 
     // process old messages from oldMessageFile
-    public void processOldMessages(String oldMessageFile)
-    {
-     
+    public void processOldMessages(String oldMessageFile) throws FileNotFoundException {
+      File file = new File(oldMessageFile);
+      Scanner messages = new Scanner(file);
+
+      char[] symbolList = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '`', '~', '!', '.', '?', ',', ';', '$', '%', '^', '&', '*', '(', ')', '+', '=', '{', '}', '[', ']', '|', '\\', ':', '"', '<', '>', '/', '\''};
+      ArrayList<Character> symbols = new ArrayList<>();
+      for (char c : symbolList) {
+        symbols.add(c);
+      }
+
+      while (messages.hasNextLine()) {
+        String[] words = messages.nextLine().split(" ");
+
+        for (String word : words) {
+          if (word.length() > 1) {
+            if (symbols.indexOf(word.charAt(0)) != -1) {
+              word = word.substring(1);
+            }
+            if (symbols.indexOf(word.charAt(word.length() - 1)) != -1 && word.length() > 2) {
+              word = word.substring(0, word.length() - 2);
+            } else if (symbols.indexOf(word.charAt(word.length() - 1)) != -1) {
+              word = word.substring(0, 0);
+            }
+  
+            if (temp.find(word)) {
+              temp.root.insert(word);
+            } else {
+              temp.root.addWord(word);
+            }
+          }
+        }
+      }
+      messages.close();
     }
 
     // based on a letter typed in by the user, return 3 word guesses in an array
     // letter: letter typed in by the user
     // letterPosition:  position of the letter in the word, starts from 0
     // wordPosition: position of the word in a message, starts from 0
-    public String[] guess(char letter,  int letterPosition, int wordPosition)
-    {
-	
-        return guesses;
+    public String[] guess(char letter,  int letterPosition, int wordPosition) {
+      if (letterPosition == 0 && currWord.length() > 0) {
+        currWord.replace(0, currWord.length(), "");
+        currWord.append(letter);
+      } else {
+        currWord.append(letter);
+      }
+
+      List<String> top = temp.suggest(currWord.toString());
+      if (top.size() == 3) {
+        for (int i = 0; i < 3; i++) {
+          guesses[i] = top.get(i);
+        }
+      }
+      return guesses;
     }
 
     // feedback on the 3 guesses from the user
@@ -81,20 +99,10 @@ public class SmartWord
     // a.         true                correct word
     // b.         false               null
     // c.         false               correct word
-    public void feedback(boolean isCorrectGuess, String correctWord)        
-    {
-
+    public void feedback(boolean isCorrectGuess, String correctWord) {
+      if (correctWord == null) {
+        return;
+      }
+      temp.root.insert(correctWord);
     }
-
-    // method used to check if input word is equal to a #
-    public static boolean isNumeric(String str) { 
-      try {  
-        Double.parseDouble(str);  
-        return true;
-      } catch(NumberFormatException e){  
-        return false;  
-      }  
-    }
-    
-
 }

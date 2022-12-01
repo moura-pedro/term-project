@@ -3,7 +3,7 @@ public class Test {
       Trie testTrie = new Trie();
       testTrie.root.insert("pedro");
       testTrie.root.insert("pedra");
-      testTrie.root.insert("pietro");
+      testTrie.root.insert("petro");
       testTrie.root.insert("Case");
       testTrie.root.insert("xablau");
       
@@ -11,7 +11,7 @@ public class Test {
       System.out.println(testTrie.find("Case"));
       System.out.println(testTrie.find("jonb"));
 
-      System.out.println(testTrie.suggest("pe"));
+      testTrie.suggest("asd");
       
 
 
