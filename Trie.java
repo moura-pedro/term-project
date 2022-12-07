@@ -5,10 +5,11 @@
 
   Course: CSE 2010
   Section: 1
-
+  
   Description of the overall algorithm: This program takes in the user input and attempts to guess the rest of the word by providing 3
                                         guesses based on the already typed letters
 */
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,49 +17,59 @@ import java.util.Map;
  
 public class Trie {
  
-   public class TrieNode {
-      Map<Character, TrieNode> children;
-      char value;
-      int weight;
+   public class Node {
+      Map<Character, Node> children;
+      char valU; // character of word value
+      int weight; // how many times used in old txt 
 
-      public TrieNode(char c) {
-         this.value = c;
+      // Node constructor 
+      public Node(char c) {
+         this.valU = c;
          children = new HashMap<>();
          this.weight = 0;
       }
 
-      public TrieNode() {
+      // 2nd constructor 
+      public Node() {
          children = new HashMap<>();
          this.weight = 0;
       }
 
+      // inserts word to the trie 
       public void insert(String word) {
-         if (word == null || word.isEmpty())
+         if (word == null || word.isEmpty()) // if there is no word return
             return;
+         // else get first character from the word 
          char first = word.charAt(0);
-         TrieNode child = children.get(first);
+         Node child = children.get(first);
          if (child == null) {
-            child = new TrieNode(first);
+            child = new Node(first);
             children.put(first, child);
          }
-
+         // checks if length is greater than 1 
          if (word.length() > 1) {
+            // if so then recurs through 
             child.insert(word.substring(1));
          } else {
+            // if not this is the end of the word and ends method
             child.weight += 1;
          }
       }
 
+      /**
+       * This method adds word to trie
+       * @param word the current word to be added 
+      */
       public void addWord(String word) {
          if (word == null || word.isEmpty())
             return;
          char first = word.charAt(0);
-         TrieNode child = children.get(first);
+         Node child = children.get(first);
          if (child == null) {
-            child = new TrieNode(first);
+            child = new Node(first);
             children.put(first, child);
          }
-
+         // checks length greater than 1 if so recurses through moving through each char 
          if (word.length() > 1) {
             child.insert(word.substring(1));
          } else {
@@ -67,21 +78,21 @@ public class Trie {
       }
    }
 
-   TrieNode root;
+   Node root;
 
+   // constructor "Trie"
    public Trie() {
-      root = new TrieNode();
+      root = new Node();
    }
 
-   public Trie(List<String> words) {
-      root = new TrieNode();
-      for (String word : words) {
-         root.insert(word);
-      }
-   }
-
+   /**
+    * This finds the words in the trie
+    * @param prefix     The current letter of word you are trying to find
+    * @param exact      used for searching exact prefix
+    * @return
+    */
    public boolean find(String prefix, boolean exact) {
-      TrieNode lastNode = root;
+      Node lastNode = root;
       for (char c : prefix.toCharArray()) {
          lastNode = lastNode.children.get(c);
          if (lastNode == null) { return false; }
@@ -93,15 +104,25 @@ public class Trie {
       return find(prefix, false);
    }
 
-   public void suggestHelper(TrieNode root, List<String> list, StringBuffer curr, List<TrieNode> top3) {
+   /**
+    * This method helps the guess method to suggest top 3 guesses 
+    * @param root   root of trie
+    * @param list   list of suggested words of current prefix
+    * @param curr   current guess
+    * @param top3   top 3 guesses
+    */
+   public void guessAssist(Node root, List<String> list, StringBuffer curr, List<Node> top3) {
+      // keeps track of top 3 guess 
       if (root.weight > 0 && top3.size() < 3) {
          list.add(curr.toString());
          top3.add(root);
+      // updates top 3 guesses
       } else if (root.weight > 0) {
          int[] dif = new int[3];
          for (int i = 0; i < 3; i++) {
             dif[i] = root.weight - top3.get(i).weight;
          }
+         // look for better guess
          int index = -1;
          for (int i = 0; i < 3; i++) {
             if (dif[i] > 0 && index == -1) {
@@ -110,24 +131,28 @@ public class Trie {
                index = i;
             }
          }
+         // checks if end of the word
          if (index != -1) {
             list.set(index, curr.toString());
             top3.set(index, root);
          }
       }
 
+      // check if curr node children is empty 
       if (root.children == null || root.children.isEmpty())
          return;
 
-      for (TrieNode child : root.children.values()) {
-         suggestHelper(child, list, curr.append(child.value), top3);
+      // recursion
+      for (Node child : root.children.values()) {
+         guessAssist(child, list, curr.append(child.valU), top3);
          curr.setLength(curr.length() - 1);
       }
    }
 
-   public List<String> suggest(String prefix) {
+   // gets the best three guesses 
+   public List<String> guess(String prefix) {
       List<String> list = new ArrayList<>();
-      TrieNode lastNode = root;
+      Node lastNode = root;
       StringBuffer curr = new StringBuffer();
       for (char c : prefix.toCharArray()) {
          lastNode = lastNode.children.get(c);
@@ -135,8 +160,10 @@ public class Trie {
                return list;
          curr.append(c);
       }
-      List<TrieNode> top3 = new ArrayList<>();
-      suggestHelper(lastNode, list, curr, top3);
+      // takes top three guesses and saves them into a list 
+      // guesss the best three guesses and sends them
+      List<Node> top3 = new ArrayList<>();
+      guessAssist(lastNode, list, curr, top3);
       return list;
    }
 }

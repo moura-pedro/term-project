@@ -84,7 +84,7 @@ public class SmartWord {
         currWord.append(letter); // add current letter to sting builder
       }
 
-      List<String> top = temp.suggest(currWord.toString()); // suggest string builder and store guesses
+      List<String> top = temp.guess(currWord.toString()); // suggest string builder and store guesses
       for (int i = 0; i < top.size(); i++) {
         guesses[i] = top.get(i); // transfer top guesses into guess array
       }
