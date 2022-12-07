@@ -23,6 +23,7 @@ public class SmartWord {
 
     // initialize SmartWord with a file of English words
     public SmartWord(String wordFile) throws FileNotFoundException {
+      wordFile = "dictionaryWords.txt";
       File file = new File(wordFile);
       Scanner words = new Scanner(file);
 
