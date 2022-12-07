@@ -1,3 +1,14 @@
+/*
+  Authors (group members): Jonathan Bailey, Pedro Moura, Jordan Synodis, Michael Richards
+  Email addresses of group members: pmoura2020@my.fit.edu, Jbailey2021@my.fit.edu, jsynodis2021@my.fit.edu, mrichards2021@my.fit.edu
+  Group name: 12JPMJ
+
+  Course: CSE 2010
+  Section: 1
+
+  Description of the overall algorithm: This program takes in the user input and attempts to guess the rest of the word by providing 3
+                                        guesses based on the already typed letters
+*/
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
