@@ -5,7 +5,6 @@
 
   Course: CSE 2010
   Section: 1
-
   Description of the overall algorithm: This program takes in the user input and attempts to guess the rest of the word by providing 3
                                         guesses based on the already typed letters
 */
